@@ -18,7 +18,7 @@ export function Body(props: BodyProps) {
       {Routes({
         routes: [
           { path: "/", view: IndexPage, exact: true },
-          { path: "/users/:id", view: AboutPage, exact: true },
+          { path: "/about", view: AboutPage, exact: true },
           { path: "*", view: () => replace("/") && "" }
         ],
         routeProps: props
