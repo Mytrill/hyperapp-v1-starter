@@ -19,7 +19,7 @@ export function Body(props: BodyProps) {
         routes: [
           { path: "/", view: IndexPage, exact: true },
           { path: "/about", view: AboutPage, exact: true },
-          { path: "*", view: () => replace("/") && "" }
+          { path: "*", view: () => replace("/") }
         ],
         routeProps: props
       })}

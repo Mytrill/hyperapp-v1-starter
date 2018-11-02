@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "lib": ["es6"],
+    "baseUrl": ".",
+    "module": "commonjs",
+    "noImplicitReturns": true,
+    "outDir": "lib",
+    "sourceMap": false,
+    "target": "es6"
+  },
+  "compileOnSave": true,
+  "include": ["src"],
+  "exclude": ["node_modules", "../node_modules", "**/*.d.ts"]
+}

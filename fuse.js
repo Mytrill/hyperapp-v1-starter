@@ -5,12 +5,13 @@ const {
   SassPlugin,
   CSSPlugin,
   CSSResourcePlugin,
+  ReplacePlugin,
   QuantumPlugin
 } = require("fuse-box")
 
 /** Tasks */
 task("default", context => {
-  context.clean().then(context.dev)
+  context.clean().then(context.serve)
 })
 
 task("dev", context => {
@@ -22,10 +23,11 @@ task("prod", context => {
 })
 
 /** Set Config */
-function initFusebox(isProduction) {
+function initFusebox(configFile, isProduction) {
+  const valuesToReplace = require(`./config/${configFile}.js`)
   return FuseBox.init({
     homeDir: "src/",
-    output: "dist/$name.js",
+    output: "public/$name.js",
     target: "browser@es5",
     plugins: [
       WebIndexPlugin({
@@ -34,10 +36,11 @@ function initFusebox(isProduction) {
       [
         SassPlugin(),
         CSSResourcePlugin({
-          dist: "dist/css-resources"
+          dist: "public/css-resources"
         }),
         CSSPlugin()
       ],
+      ReplacePlugin(valuesToReplace),
       isProduction &&
         QuantumPlugin({
           uglify: true,
@@ -57,15 +60,15 @@ context(
   class {
     /** clean dist directory */
     clean() {
-      return src("dist")
-        .clean("dist/")
+      return src("public")
+        .clean("public/")
         .clean(".fusebox/")
         .exec()
     }
 
-    /** dev build */
-    dev() {
-      const fuse = initFusebox(false)
+    /** build, watch and serve */
+    serve() {
+      const fuse = initFusebox("dev", false)
       fuse.dev({ open: true })
       fuse
         .bundle("app")
@@ -75,9 +78,16 @@ context(
       return fuse.run()
     }
 
+    /** dev build */
+    dev() {
+      const fuse = initFusebox("dev", true)
+      fuse.bundle("app").instructions(" > index.tsx")
+      return fuse.run()
+    }
+
     /** prod build  */
     prod() {
-      const fuse = initFusebox(true)
+      const fuse = initFusebox("prod", true)
       fuse.bundle("app").instructions(" > index.tsx")
       return fuse.run()
     }
